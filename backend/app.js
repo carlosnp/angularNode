@@ -24,7 +24,32 @@ app.get('/api', function(req, res) {
     messages:"Welcom",
     description: "Sequi aut vitae provident labore excepturi. Inventore sint voluptates. Magnam beatae suscipit illo eos voluptatum doloremque. Quibusdam temporibus adipisci aspernatur sit. Quia blanditiis voluptatum deleniti vel. Repellendus natus numquam.",
     routes:{
-      user:"/api/users"
+      user:{
+        url: "/api/users",
+        childrens:{
+          login:{
+            url:"/api/users/login",
+            token:"No",
+            fields:{
+              email: 'Correo electronico',
+              password: 'Contraseña',
+            }
+          },
+          register:{
+            url:"/api/users/register",
+            token:"No",
+            fields:{
+              first_name: 'Nombre',
+              last_name: 'Apellido',
+              email: 'Correo electronico',
+              password: 'Contraseña',
+              role:'Role',
+              image:'Imagen',
+              extra:'Extra',
+            }
+          },
+        }
+      }
     }
   })
 })

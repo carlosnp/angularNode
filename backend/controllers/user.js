@@ -24,6 +24,11 @@ const names = {
   image:'Imagen',
   extra:'Extra',
 };
+// Reglas para validar el login
+const rulesLogin = {
+  email: 'required|email',
+  password: 'required|min:8',
+};
 
 function tests(req,res) {
   res.status(200).send({
@@ -79,9 +84,64 @@ function registerUser(req,res) {
     })
   }
 }
+/*
+* Login User
+*/
+function loginUser(req,res) {
+  var params = req.body;
+  // Validation
+  let validation = new Validator(params, rulesLogin);
+  validation.setAttributeNames(names);
+  if (validation.passes()) {
+    UserFindOne(params, res);
+  } else if (validation.fails()){
+    res.status(400).send({
+      error:validation.errors.all()
+    })
+  }
+}
+/*
+* Find User by email and return user login
+*/
+function UserFindOne(params, res) {
+  var email = params.email;
+  var pássword = params.password;
+  User.findOne({email:email.toLowerCase()}, (errUser, user)=>{
+    if (errUser) {
+      res.status(404).send({
+        status:404,
+        message:"user not found",
+        checkIn:"NF"
+      })
+    } else if (!user){
+      res.status(404).send({
+        status:404,
+        message:"user not found",
+        checkIn:"NF"
+      })
+    } else if(user){
+      console.log(user);
+      bcrypt.compare(pássword, user.password, function(err, check) {
+        if (!check) {
+          res.status(404).send({
+            status:404,
+            message:"user not found",
+            checkIn:"EP"
+          })
+        } else if(check){
+          res.status(200).send({
+            status:200,
+            data:user,
+          })
+        }
+      });
+    }
+  })
+}
 
 
 module.exports = {
   tests,
-  registerUser
+  registerUser,
+  loginUser
 }

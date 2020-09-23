@@ -70,6 +70,7 @@ function registerUser(req,res) {
       } else if(!userSave){
         res.status(404).send({
           status:404,
+          title:"Not found",
           message:"No se ha registrado el usuario"
         });
       } else{
@@ -111,12 +112,14 @@ function UserFindOne(params, res) {
     if (errUser) {
       res.status(404).send({
         status:404,
+        title:"Not found",
         message:"user not found",
         checkIn:"NF"
       })
     } else if (!user){
       res.status(404).send({
         status:404,
+        title:"Not found",
         message:"user not found",
         checkIn:"NF"
       })
@@ -134,6 +137,7 @@ function UserFindOne(params, res) {
         if (!check) {
           res.status(404).send({
             status:404,
+            title:"not found page",
             message:"user not found",
             checkIn:"EP"
           })

@@ -3,6 +3,7 @@
 const bcrypt    = require('bcrypt');
 const User      = require('../models/user');
 const Validator = require('validatorjs');
+const jwt       = require('../services/jwt');
 Validator.useLang('es');
 
 // Reglas para validar los campos de un usuario
@@ -120,7 +121,15 @@ function UserFindOne(params, res) {
         checkIn:"NF"
       })
     } else if(user){
-      console.log(user);
+      var userReturn = {
+        id: user._id,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        email: user.email,
+        role: user.role,
+        image: user.image,
+        extra: user.extra
+      }
       bcrypt.compare(pássword, user.password, function(err, check) {
         if (!check) {
           res.status(404).send({
@@ -129,9 +138,15 @@ function UserFindOne(params, res) {
             checkIn:"EP"
           })
         } else if(check){
+          if (params.gethash) {
+            userToken = jwt.createToken(user);
+            userReturn.token = userToken.token;
+            userReturn.create_token = userToken.create_token;
+            userReturn.expirate_token = userToken.expirate_token;
+          }
           res.status(200).send({
             status:200,
-            data:user,
+            data:userReturn,
           })
         }
       });

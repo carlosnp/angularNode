@@ -4,6 +4,7 @@ const bcrypt    = require('bcrypt');
 const User      = require('../models/user');
 const Validator = require('validatorjs');
 const jwt       = require('../services/jwt');
+const { json } = require('body-parser');
 Validator.useLang('es');
 
 // Reglas para validar los campos de un usuario
@@ -29,6 +30,16 @@ const names = {
 const rulesLogin = {
   email: 'required|email',
   password: 'required|min:8',
+};
+// Reglas para validar los campos a Actualiza
+const rulesUpdate = {
+  first_name: 'string|min:3',
+  last_name: 'string|min:3',
+  email: 'email',
+  password: 'string|smin:8',
+  role:'string',
+  image:'string',
+  extra:'string',
 };
 
 function tests(req,res) {
@@ -62,11 +73,20 @@ function registerUser(req,res) {
     user.password = bcrypt.hashSync(params.password, salt);
     // Se procede a guardar al usuario
     user.save((err, userSave)=>{
+      console.log('err save',JSON.stringify(err));
       if (err) {
-        res.status(500).send({
-          status:500,
-          message:"Error al guardar el usuario"
-        });
+        if (err.code == 11000) {
+          res.status(400).send({
+            status:400,
+            message:"Error al guardar el usuario",
+            error: Object.assign({},err)
+          });
+        } else {
+          res.status(500).send({
+            status:500,
+            message:"Error al guardar el usuario"
+          });
+        }
       } else if(!userSave){
         res.status(404).send({
           status:404,
@@ -157,10 +177,58 @@ function UserFindOne(params, res) {
     }
   })
 }
-
+/*
+* Update User
+*/
+function updateUser(req,res) {
+  var dataUser = req.body;
+  dataUser.updated_at = new Date();
+  console.log('dataUser',dataUser)
+  // Validation
+  let validation = new Validator(dataUser, rulesUpdate);
+  validation.setAttributeNames(names);
+  console.log('passes',validation.passes())
+  if (validation.passes()) {
+    var userID = req.params.id !=undefined ? req.params.id : dataUser.id;
+    console.log('userID',userID)
+    if (userID) {
+      User.findOneAndUpdate(userID, dataUser, (err, updateUser)=>{
+        console.log('update',err, updateUser);
+        if (err) {
+          res.status(500).send({
+            status:500,
+            message:"Error al actualizar el usuario"
+          });
+        } else if(!updateUser){
+          res.status(404).send({
+            status:404,
+            title:"Not found",
+            message:"No se ha actualizado el usuario"
+          });
+        } else{
+          res.status(200).send({
+            status:200,
+            data:updateUser
+          });
+        }
+      });
+    } else {
+      res.status(404).send({
+        status:404,
+        title:"Not found",
+        message:"Debe enviar el ID del usuario"
+      });
+    }
+  } else if (validation.fails()){
+    res.status(400).send({
+      error:validation.errors.all()
+    })
+  }
+}
 
 module.exports = {
   tests,
   registerUser,
-  loginUser
+  loginUser,
+  updateUser
 }

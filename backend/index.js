@@ -13,7 +13,7 @@ const port = process.env.PORT || 3900;
 // Base de datos
 var mongoose = require('mongoose');
 const db = 'mongodb://localhost:27017/angular_curso';
-mongoose.connect(db,{ useNewUrlParser: true, useUnifiedTopology: true },
+mongoose.connect(db,{ useCreateIndex: true, useNewUrlParser: true, useUnifiedTopology: true },
   (err,res)=>{
   if (err) {
     console.log("Data Base Ok",err);

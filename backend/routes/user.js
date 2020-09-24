@@ -10,5 +10,6 @@ router.get('/test-controller', UserController.tests);
 router.get('/test-middleware', md_Auth.verifyAuth, UserController.tests);
 router.post('/register', UserController.registerUser);
 router.post('/login', UserController.loginUser);
+router.put('/update-user/:id?', UserController.updateUser);
 
 module.exports = router;

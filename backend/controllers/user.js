@@ -73,8 +73,8 @@ function registerUser(req,res) {
     user.password = bcrypt.hashSync(params.password, salt);
     // Se procede a guardar al usuario
     user.save((err, userSave)=>{
-      console.log('err save',JSON.stringify(err));
       if (err) {
+        console.log('err save', Object.assign({}, err));
         if (err.code == 11000) {
           res.status(400).send({
             status:400,
@@ -130,6 +130,7 @@ function UserFindOne(params, res) {
   var pássword = params.password;
   User.findOne({email:email.toLowerCase()}, (errUser, user)=>{
     if (errUser) {
+      console.log('err login',Object.assign({}, errUser));
       res.status(404).send({
         status:404,
         title:"Not found",
@@ -183,21 +184,20 @@ function UserFindOne(params, res) {
 function updateUser(req,res) {
   var dataUser = req.body;
   dataUser.updated_at = new Date();
-  console.log('dataUser',dataUser)
   // Validation
   let validation = new Validator(dataUser, rulesUpdate);
   validation.setAttributeNames(names);
-  console.log('passes',validation.passes())
   if (validation.passes()) {
     var userID = req.params.id !=undefined ? req.params.id : dataUser.id;
-    console.log('userID',userID)
     if (userID) {
-      User.findOneAndUpdate(userID, dataUser, (err, updateUser)=>{
-        console.log('update',err, updateUser);
+      User.findOneAndUpdate({_id: userID}, dataUser,
+        {new: true, upsert: true}, (err, updateUser)=>{
         if (err) {
+          console.log('Error update',Object.assign({}, err));
           res.status(500).send({
             status:500,
-            message:"Error al actualizar el usuario"
+            message:"Error al actualizar el usuario",
+            error: Object.assign({}, err)
           });
         } else if(!updateUser){
           res.status(404).send({

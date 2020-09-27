@@ -11,11 +11,19 @@ import { RamdomUserComponent } from './test/ramdom-user/ramdom-user.component';
 
 // Services
 import { RamdomUserService } from './services/ramdom-user.service';
+import { HomeComponent } from './components/home/home.component';
+import { NavbarComponent } from './components/navbar/navbar.component';
+import { RegisterComponent } from './components/user/register/register.component';
+import { LoginComponent } from './components/user/login/login.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    RamdomUserComponent
+    RamdomUserComponent,
+    HomeComponent,
+    NavbarComponent,
+    RegisterComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,

@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { jsPDF } from 'jspdf';
+import * as jsPDF from 'jspdf';
 
 @Component({
   selector: 'app-pdf',
@@ -58,7 +58,7 @@ export class PdfComponent implements OnInit {
     const DATA = this.htmlData.nativeElement;
     const doc = new jsPDF('p', 'pt', 'a4');
     doc.fromHTML(DATA.innerHTML, 15, 15);
-    doc.save('dataurlnewwindow');
+    doc.output('dataurlnewwindow');
   }
 
   public downloadPDF(): void {

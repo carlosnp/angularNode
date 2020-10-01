@@ -7,6 +7,7 @@ import { jsPDF } from 'jspdf';
   styleUrls: ['./pdf.component.css']
 })
 export class PdfComponent implements OnInit {
+
   @ViewChild('htmlData') htmlData: ElementRef;
 
   USERS = [
@@ -57,7 +58,7 @@ export class PdfComponent implements OnInit {
     const DATA = this.htmlData.nativeElement;
     const doc = new jsPDF('p', 'pt', 'a4');
     doc.fromHTML(DATA.innerHTML, 15, 15);
-    doc.output('dataurlnewwindow');
+    doc.save('dataurlnewwindow');
   }
 
   public downloadPDF(): void {
@@ -75,6 +76,12 @@ export class PdfComponent implements OnInit {
     });
 
     doc.save('angular-demo.pdf');
+  }
+
+  pdfBase(): void {
+    const doc = new jsPDF();
+    doc.text('Hello world!', 10, 10);
+    doc.save('a4.pdf');
   }
 
 }

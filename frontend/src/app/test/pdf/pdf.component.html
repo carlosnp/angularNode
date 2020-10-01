@@ -4,17 +4,17 @@
 
     <div class="col-md-8" id="htmlData" #htmlData>
       <table class="table table-bordered">
-        <tr class="table-primary">
+        <tr class="table-warning">
           <th>Id</th>
           <th>Name</th>
           <th>Email</th>
           <th>Phone</th>
         </tr>
         <tr *ngFor="let user of USERS">
-          <th>{{user.id}}</th>
-          <td>{{user.name}}</td>
-          <td>{{user.email}}</td>
-          <td>{{user.phone}}</td>
+          <th >{{user.id}}</th>
+          <td >{{user.name}}</td>
+          <td >{{user.email}}</td>
+          <td >{{user.phone}}</td>
         </tr>
       </table>
     </div>

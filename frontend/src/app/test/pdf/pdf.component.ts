@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import * as jsPDF from 'jspdf';
+import { jsPDF } from 'jspdf';
 
 @Component({
   selector: 'app-pdf',
@@ -57,25 +57,27 @@ export class PdfComponent implements OnInit {
   public openPDF(): void {
     const DATA = this.htmlData.nativeElement;
     const doc = new jsPDF('p', 'pt', 'a4');
-    doc.fromHTML(DATA.innerHTML, 15, 15);
-    doc.output('dataurlnewwindow');
+    doc.html(DATA.innerHTML, {
+      // tslint:disable-next-line: no-shadowed-variable
+      callback: (doc) => {
+        doc.output('dataurlnewwindow');
+      },
+      x: 5,
+      y: 5
+   });
   }
 
   public downloadPDF(): void {
     const DATA = this.htmlData.nativeElement;
     const doc = new jsPDF('p', 'pt', 'a4');
-
-    const handleElement = {
-      '#editor': (element, renderer) => {
-        return true;
-      }
-    };
-    doc.fromHTML(DATA.innerHTML, 15, 15, {
-      width: 200,
-      elementHandlers: handleElement
-    });
-
-    doc.save('angular-demo.pdf');
+    doc.html(DATA.innerHTML, {
+      // tslint:disable-next-line: no-shadowed-variable
+      callback: (doc) => {
+        doc.save('angular-demo.pdf');
+      },
+      x: 5,
+      y: 5
+   });
   }
 
   pdfBase(): void {
